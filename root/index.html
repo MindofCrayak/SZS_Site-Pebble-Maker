@@ -25,7 +25,38 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
     body { background-color: var(--bg-studio); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; display: flex; overflow: hidden; }
 
-    /* ================= SIDEBAR ================= */
+    /* ================= DYNAMIC EMBED MODE OVERRIDES ================= */
+    body.embed-mode {
+      background: transparent !important;
+      width: 100vw !important;
+      height: 100vh !important;
+    }
+    body.embed-mode .studio-sidebar,
+    body.embed-mode .code-terminal,
+    body.embed-mode .glow-blob,
+    body.embed-mode .modal-backdrop {
+      display: none !important;
+    }
+    body.embed-mode .studio-workspace,
+    body.embed-mode .preview-stage {
+      background: transparent !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    body.embed-mode .device-frame {
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
+    }
+    body.embed-mode .marquee-viewport {
+      min-height: 100vh !important;
+      padding: 0 !important;
+    }
+
+    /* ================= STUDIO SIDEBAR ================= */
     .studio-sidebar { width: 420px; min-width: 400px; background: var(--panel-surface); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; height: 100%; z-index: 20; }
     .studio-header { padding: 1rem 1.4rem; border-bottom: 1px solid var(--panel-border); display: flex; align-items: center; justify-content: space-between; background: #0f1118; }
     .studio-header h1 { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
@@ -38,7 +69,7 @@
     .control-block { display: flex; flex-direction: column; gap: 0.45rem; }
     .control-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
 
-    /* Switches & Inputs */
+    /* Switches & Form Controls */
     .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--panel-surface-alt); padding: 0.65rem 0.9rem; border-radius: 8px; border: 1px solid var(--panel-border); cursor: pointer; }
     .toggle-title { font-size: 0.82rem; font-weight: 600; }
     .switch-ui { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
@@ -97,7 +128,7 @@
     .marquee-viewport:active { cursor: grabbing; }
     .marquee-track { display: flex; width: max-content; will-change: transform; gap: 28px; align-items: center; }
     
-    .pebble-item { width: 280px; min-height: 360px; flex-shrink: 0; padding: 2rem 1.6rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); transition: border-radius 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.25s ease; position: relative; }
+    .pebble-item { width: 280px; min-height: 360px; flex-shrink: 0; padding: 2rem 1.6rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4); transition: border-radius 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.25s ease; position: relative; }
     .pebble-item:hover { transform: translateY(-5px); }
 
     .card-icon-svg { margin-bottom: 0.5rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)); transition: width 0.2s ease, height 0.2s ease; }
@@ -328,10 +359,9 @@
     <!-- Code Terminal -->
     <div class="code-terminal">
       <div class="terminal-bar">
-        <span class="terminal-title">Live Code Export</span>
+        <span class="terminal-title">Canva Smart URL Engine</span>
         <div class="terminal-buttons">
-          <button class="btn-action-small" id="copySmartUrlTerminalBtn" style="background:#10b981; border:none; color:white;">🔗 Copy Smart URL</button>
-          <button class="btn-action-small" id="copyIframeTerminalBtn">📦 Copy Iframe Embed</button>
+          <button class="btn-action-small" id="copySmartUrlTerminalBtn" style="background:#10b981; border:none; color:white;">🔗 Copy Canva Smart URL</button>
           <button class="btn-action-small" id="downloadHtmlBtn">💾 Download HTML</button>
           <button class="btn-action-small" id="copyCodeBtn">📋 Copy Raw Code</button>
         </div>
@@ -344,17 +374,15 @@
   <div class="modal-backdrop" id="exportModal">
     <div class="export-modal">
       <div class="modal-header">
-        <h3>🚀 Smart Export & Deployment</h3>
+        <h3>🚀 Smart Export for Canva</h3>
         <button class="modal-close" id="closeExportModalBtn">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="modal-step"><div class="step-num">1</div><div><strong>Smart URL (No Hosting Required)</strong><p>The entire layout is encoded directly into a secure Data URI link. It works instantly inside an iframe or browser without a server.</p></div></div>
-        <div class="modal-step"><div class="step-num">2</div><div><strong>Iframe Embed Block</strong><p>Creates a responsive <code>&lt;iframe&gt;</code> tag wrapped around your Smart URL. Paste this directly into Notion, Webflow, or Canva's Embed block.</p></div></div>
-        <div class="modal-step"><div class="step-num">3</div><div><strong>Download HTML (GitHub Pages)</strong><p>If you prefer traditional hosting, download the standalone <code>index.html</code> file and push it to GitHub Pages.</p></div></div>
+        <div class="modal-step"><div class="step-num">1</div><div><strong>One-Click Canva Smart URL (Recommended)</strong><p>Encodes your exact customized cards, colors, fonts, and pebbles into a single live HTTPS URL on your GitHub server. It will render <em>only</em> your customized marquee inside Canva without any sidebar clutter.</p></div></div>
+        <div class="modal-step"><div class="step-num">2</div><div><strong>Embed in Canva</strong><p>Go to Canva &gt; <strong>Apps &gt; Embed</strong> and paste the copied link.</p></div></div>
       </div>
       <div class="modal-footer">
-        <button class="btn-action-small" id="modalCopySmartUrlBtn" style="background:#10b981; border:none; color:white;">🔗 Copy Smart URL</button>
-        <button class="btn-action-small" id="modalCopyIframeBtn">📦 Copy Iframe Embed</button>
+        <button class="btn-action-small" id="modalCopySmartUrlBtn" style="background:#10b981; border:none; color:white;">🔗 Copy Canva Smart URL</button>
         <button class="btn-export-top" id="modalDownloadBtn">💾 Download HTML</button>
       </div>
     </div>
@@ -375,7 +403,6 @@
       star: { name: 'Star', svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' }
     };
 
-    /* Data Model */
     let cardList = [
       { id: 1, iconKey: 'stone1', iconColor: '#60a5fa', imageBase64: null, title: 'River Stone', showSub1: true, sub1: 'Nature Engineered', showSub2: true, sub2: 'Organic Geometry', desc: 'Organic non-Euclidean curves calculated with multi-point radii.', btnLink: 'https://example.com/1', btnNewTab: true },
       { id: 2, iconKey: 'gem', iconColor: '#c084fc', imageBase64: null, title: 'Cyber Quartz', showSub1: true, sub1: 'Refraction Layer', showSub2: false, sub2: 'Optical Blur', desc: 'Frosted refraction glassmorphism with sub-surface blur diffusion.', btnLink: 'https://example.com/2', btnNewTab: true },
@@ -441,7 +468,72 @@
     let lastTimestamp = performance.now();
     let isTransparent = false;
 
-    /* ================= 3. CARD MANAGEMENT ENGINE ================= */
+    /* ================= 3. STATE CAPTURE & RESTORE (SMART URL) ================= */
+    function captureFullConfig() {
+      return {
+        cards: cardList,
+        radii: currentRadii,
+        fx: cardFxSelect ? cardFxSelect.value : 'glassmorphism',
+        font: fontFamilySelect ? fontFamilySelect.value : "'Plus Jakarta Sans', sans-serif",
+        tSize: titleSizeSlider ? titleSizeSlider.value : 1.15,
+        s1W: sub1WeightSlider ? sub1WeightSlider.value : 700,
+        s2W: sub2WeightSlider ? sub2WeightSlider.value : 500,
+        colors: {
+          t: titleColorInput ? titleColorInput.value : '#ffffff',
+          d: descColorInput ? descColorInput.value : '#94a3b8',
+          s1: sub1ColorInput ? sub1ColorInput.value : '#6366f1',
+          s2: sub2ColorInput ? sub2ColorInput.value : '#94a3b8',
+          tint: cardTintInput ? cardTintInput.value : '#ffffff',
+          acc: accentColorInput ? accentColorInput.value : '#6366f1',
+          bBg: btnBgColorInput ? btnBgColorInput.value : '#6366f1',
+          bTxt: btnTextColorInput ? btnTextColorInput.value : '#ffffff'
+        },
+        btn: {
+          show: showButtonToggle ? showButtonToggle.checked : true,
+          txt: btnTextInput ? btnTextInput.value : 'Explore Service',
+          rad: btnRadiusSlider ? btnRadiusSlider.value : 24
+        },
+        iconSize: iconSizeSlider ? iconSizeSlider.value : 44,
+        speed: baseSpeed
+      };
+    }
+
+    function applyFullConfig(cfg) {
+      if (!cfg) return;
+      if (cfg.cards) cardList = cfg.cards;
+      if (cfg.radii) currentRadii = cfg.radii;
+      if (cfg.speed) baseSpeed = cfg.speed;
+      if (cardFxSelect && cfg.fx) cardFxSelect.value = cfg.fx;
+      if (fontFamilySelect && cfg.font) fontFamilySelect.value = cfg.font;
+      if (titleSizeSlider && cfg.tSize) titleSizeSlider.value = cfg.tSize;
+      if (sub1WeightSlider && cfg.s1W) sub1WeightSlider.value = cfg.s1W;
+      if (sub2WeightSlider && cfg.s2W) sub2WeightSlider.value = cfg.s2W;
+      if (cfg.colors) {
+        if (titleColorInput && cfg.colors.t) titleColorInput.value = cfg.colors.t;
+        if (descColorInput && cfg.colors.d) descColorInput.value = cfg.colors.d;
+        if (sub1ColorInput && cfg.colors.s1) sub1ColorInput.value = cfg.colors.s1;
+        if (sub2ColorInput && cfg.colors.s2) sub2ColorInput.value = cfg.colors.s2;
+        if (cardTintInput && cfg.colors.tint) cardTintInput.value = cfg.colors.tint;
+        if (accentColorInput && cfg.colors.acc) accentColorInput.value = cfg.colors.acc;
+        if (btnBgColorInput && cfg.colors.bBg) btnBgColorInput.value = cfg.colors.bBg;
+        if (btnTextColorInput && cfg.colors.bTxt) btnTextColorInput.value = cfg.colors.bTxt;
+      }
+      if (cfg.btn) {
+        if (showButtonToggle && cfg.btn.show !== undefined) showButtonToggle.checked = cfg.btn.show;
+        if (btnTextInput && cfg.btn.txt) btnTextInput.value = cfg.btn.txt;
+        if (btnRadiusSlider && cfg.btn.rad) btnRadiusSlider.value = cfg.btn.rad;
+      }
+      if (iconSizeSlider && cfg.iconSize) iconSizeSlider.value = cfg.iconSize;
+    }
+
+    function generateCanvaSmartUrl() {
+      const cfg = captureFullConfig();
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
+      const currentUrl = window.location.href.split('?')[0].split('#')[0];
+      return `${currentUrl}?embed=true#${payload}`;
+    }
+
+    /* ================= 4. CARD MANAGEMENT ================= */
     function refreshCardDropdown() {
       if (!selectedCardIndex) return;
       const val = parseInt(selectedCardIndex.value, 10) || 0;
@@ -483,7 +575,6 @@
           if (txt) txt.textContent = "📥 Drop Image or Click to Upload";
         }
       }
-
       buildIconPickerUI();
     }
 
@@ -540,7 +631,7 @@
 
     selectedCardIndex?.addEventListener('change', loadActiveCardData);
 
-    /* ================= 4. IMAGE DROP CHUTE ================= */
+    /* ================= 5. IMAGE DROP CHUTE ================= */
     imageDropZone?.addEventListener('click', () => imageUploadInput?.click());
     imageDropZone?.addEventListener('dragover', (e) => { e.preventDefault(); imageDropZone.classList.add('dragover'); });
     imageDropZone?.addEventListener('dragleave', () => imageDropZone.classList.remove('dragover'));
@@ -574,7 +665,7 @@
       }
     });
 
-    /* ================= 5. VECTOR ICON LIBRARY ================= */
+    /* ================= 6. VECTOR ICON LIBRARY ================= */
     function buildIconPickerUI() {
       if (!iconPickerGrid || !selectedCardIndex) return;
       iconPickerGrid.innerHTML = '';
@@ -609,7 +700,7 @@
       renderTrackCards(); compileExport();
     });
 
-    /* ================= 6. MATH & RENDER ENGINE ================= */
+    /* ================= 7. MATH & RENDER ENGINE ================= */
     function generateOrganicRadius(variance) {
       const min = 50 - variance; const max = 50 + variance;
       const r = () => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -731,124 +822,13 @@
     marqueeViewport?.addEventListener('pointerup', stopDragging);
     marqueeViewport?.addEventListener('pointercancel', stopDragging);
 
-    /* ================= 7. LIVE CODE EXPORT COMPILER ================= */
+    /* ================= 8. LIVE EXPORT LOGIC ================= */
     function compileExport() {
-      const fx = cardFxSelect?.value || 'glassmorphism';
-      const font = fontFamilySelect?.value || "'Plus Jakarta Sans', sans-serif";
-      const titleSize = titleSizeSlider?.value || 1.15;
-      const sub1Weight = sub1WeightSlider?.value || 700;
-      const sub2Weight = sub2WeightSlider?.value || 500;
-      const titleColor = titleColorInput?.value || '#ffffff';
-      const descColor = descColorInput?.value || '#94a3b8';
-      const sub1Color = sub1ColorInput?.value || '#6366f1';
-      const sub2Color = sub2ColorInput?.value || '#94a3b8';
-      const cardTint = cardTintInput?.value || '#ffffff';
-      const accent = accentColorInput?.value || '#6366f1';
-      const showBtn = showButtonToggle ? showButtonToggle.checked : true;
-      const btnText = btnTextInput?.value || 'Explore Service';
-      const btnBg = btnBgColorInput?.value || '#6366f1';
-      const btnTextColor = btnTextColorInput?.value || '#ffffff';
-      const btnRadius = btnRadiusSlider?.value || 24;
-      const iconSize = iconSizeSlider?.value || 44;
-      const bgCanvas = isTransparent ? 'transparent' : '#0b0c12';
-
-      let fxCss = '';
-      if (fx === 'glassmorphism') {
-        fxCss = `background: ${hexToRgba(cardTint, 0.12)}; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid ${hexToRgba(cardTint, 0.28)}; box-shadow: 0 14px 35px 0 rgba(0, 0, 0, 0.45);`;
-      } else if (fx === 'cyber-glow') {
-        fxCss = `background: ${hexToRgba(cardTint, 0.14)}; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid ${accent}; box-shadow: 0 0 28px ${hexToRgba(accent, 0.55)}, inset 0 0 14px ${hexToRgba(accent, 0.25)};`;
-      } else if (fx === 'dark-minimal') {
-        fxCss = `background: ${hexToRgba(cardTint, 0.16)}; border: 1px solid #282d42; box-shadow: 0 10px 25px rgba(0,0,0,0.5);`;
-      } else if (fx === 'soft-rim') {
-        fxCss = `background: ${hexToRgba(cardTint, 0.18)}; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 10px 10px 24px #08090e, -6px -6px 20px #242a3e;`;
+      const smartUrl = generateCanvaSmartUrl();
+      if (codeDisplay) {
+        codeDisplay.textContent = `/* CANVA READY HTTPS SMART URL */\n${smartUrl}`;
       }
-
-      const fullList = [...cardList, ...cardList];
-      const mirrorRadii = [...currentRadii, ...currentRadii];
-
-      const cardsHtml = fullList.map((c, i) => {
-        const radius = mirrorRadii[i] || '55% 45% 40% 60% / 60% 35% 65% 40%';
-        let graphic = c.imageBase64 
-          ? `<img src="${c.imageBase64}" class="card-custom-img">`
-          : `<svg class="card-icon-svg" viewBox="0 0 24 24" fill="none" stroke="${c.iconColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON_PRESETS[c.iconKey]?.svg || ICON_PRESETS.stone1.svg}</svg>`;
-        
-        const sub1 = c.showSub1 ? `\n        <div class="card-sub1">${c.sub1 || ''}</div>` : '';
-        const sub2 = c.showSub2 ? `\n        <div class="card-sub2">${c.sub2 || ''}</div>` : '';
-        const target = c.btnNewTab ? 'target="_blank" rel="noopener noreferrer"' : '';
-
-        return `      <div class="pebble-item" style="border-radius: ${radius};">\n        ${graphic}\n        <div class="card-title">${c.title}</div>${sub1}${sub2}\n        <div class="card-desc">${c.desc}</div>\n        <a href="${c.btnLink || '#'}" ${target} class="card-btn">${btnText}</a>\n      </div>`;
-      }).join('\n');
-
-      const sOpen = '<' + 'script' + '>';
-      const sClose = '<' + '/script' + '>';
-
-      const compiled = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canva Marquee Embed</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: ${bgCanvas}; font-family: ${font}; overflow: hidden; display: flex; align-items: center; min-height: 100vh; user-select: none; }
-    .marquee-viewport { width: 100%; min-height: 420px; overflow: hidden; cursor: grab; padding: 30px 0; display: flex; align-items: center; }
-    .marquee-viewport:active { cursor: grabbing; }
-    .marquee-track { display: flex; width: max-content; gap: 28px; will-change: transform; align-items: center; }
-    .pebble-item { width: 280px; min-height: 360px; flex-shrink: 0; padding: 2rem 1.6rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; ${fxCss} transition: transform 0.25s ease; }
-    .pebble-item:hover { transform: translateY(-5px); }
-    .card-icon-svg { width: ${iconSize}px; height: ${iconSize}px; margin-bottom: 0.5rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
-    .card-custom-img { width: ${iconSize}px; height: ${iconSize}px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
-    .card-title { font-size: ${titleSize}rem; font-weight: 700; color: ${titleColor}; margin-bottom: 0.25rem; }
-    
-    .card-sub1 { font-size: 0.76rem; font-weight: ${sub1Weight}; color: ${sub1Color}; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
-    .card-sub2 { font-size: 0.74rem; font-weight: ${sub2Weight}; color: ${sub2Color}; opacity: 0.85; margin-bottom: 0.45rem; }
-    
-    .card-desc { font-size: 0.8rem; line-height: 1.45; color: ${descColor}; margin-bottom: 1.1rem; }
-    .card-btn { display: ${showBtn ? 'inline-flex' : 'none'}; align-items: center; justify-content: center; padding: 0.55rem 1.35rem; font-size: 0.8rem; font-weight: 700; text-decoration: none; background: ${btnBg}; color: ${btnTextColor}; border-radius: ${btnRadius}px; box-shadow: 0 4px 14px ${hexToRgba(btnBg, 0.4)}; transition: 0.2s ease; }
-    .card-btn:hover { transform: scale(1.05); filter: brightness(1.15); }
-  </style>
-</head>
-<body>
-  <div class="marquee-viewport" id="viewport">
-    <div class="marquee-track" id="track">\n${cardsHtml}\n    </div>
-  </div>
-
-  ${sOpen}
-    const viewport = document.getElementById('viewport');
-    const track = document.getElementById('track');
-    let baseSpeed = ${baseSpeed}, currentX = 0, isDragging = false, lastX = 0, velocity = 0, lastTime = performance.now();
-
-    function loop(now) {
-      const dt = (now - lastTime) / 1000; lastTime = now; const half = track.scrollWidth / 2;
-      if (!isDragging) {
-        if (Math.abs(velocity) > 0.5) { velocity *= 0.94; currentX -= velocity * dt; } else { velocity = 0; currentX -= baseSpeed * dt; }
-      }
-      if (half > 50) { if (currentX <= -half) currentX += half; if (currentX > 0) currentX -= half; }
-      track.style.transform = 'translate3d(' + currentX + 'px, 0, 0)';
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
-
-    viewport.addEventListener('pointerdown', (e) => { isDragging = true; lastX = e.clientX; velocity = 0; try { viewport.setPointerCapture(e.pointerId); } catch(_) {} });
-    viewport.addEventListener('pointermove', (e) => { if (!isDragging) return; const dx = e.clientX - lastX; lastX = e.clientX; currentX += dx; velocity = -dx * 40; });
-    const stop = (e) => { isDragging = false; try { viewport.releasePointerCapture(e.pointerId); } catch(_) {} };
-    viewport.addEventListener('pointerup', stop); viewport.addEventListener('pointercancel', stop);
-  ${sClose}
-</body>
-</html>`;
-
-      if (codeDisplay) codeDisplay.textContent = compiled;
-      return compiled;
-    }
-
-    /* ================= 8. EXPORT API & BASE64 GENERATOR ================= */
-    function getSmartUrl() {
-      const code = compileExport();
-      const base64 = window.btoa(unescape(encodeURIComponent(code)));
-      return `data:text/html;base64,${base64}`;
+      return smartUrl;
     }
 
     function execCopy(btn, text) {
@@ -874,24 +854,21 @@
       document.body.removeChild(ta);
     }
 
-    // Wiring up Smart URL & Iframe buttons
+    // Connect Smart URL Buttons
     ['copySmartUrlTerminalBtn', 'modalCopySmartUrlBtn'].forEach(id => {
-      document.getElementById(id)?.addEventListener('click', function() { execCopy(this, getSmartUrl()); });
-    });
-
-    ['copyIframeTerminalBtn', 'modalCopyIframeBtn'].forEach(id => {
-      document.getElementById(id)?.addEventListener('click', function() {
-        const iframeBlock = `<iframe src="${getSmartUrl()}" width="100%" height="450px" frameborder="0" style="border:none; background:transparent;" allowtransparency="true"></iframe>`;
-        execCopy(this, iframeBlock);
+      document.getElementById(id)?.addEventListener('click', function() { 
+        execCopy(this, generateCanvaSmartUrl()); 
       });
     });
 
-    document.getElementById('copyCodeBtn')?.addEventListener('click', function() { execCopy(this, compileExport()); });
+    document.getElementById('copyCodeBtn')?.addEventListener('click', function() { 
+      execCopy(this, generateCanvaSmartUrl()); 
+    });
 
     function triggerDownload() {
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([compileExport()], { type: 'text/html' }));
-      a.download = 'marquee.html';
+      a.href = URL.createObjectURL(new Blob([document.documentElement.outerHTML], { type: 'text/html' }));
+      a.download = 'index.html';
       a.click();
     }
     document.getElementById('downloadHtmlBtn')?.addEventListener('click', triggerDownload);
@@ -961,12 +938,29 @@
     document.getElementById('openExportModalBtn')?.addEventListener('click', () => exportModal?.classList.add('open'));
     document.getElementById('closeExportModalBtn')?.addEventListener('click', () => exportModal?.classList.remove('open'));
 
-    /* ================= 9. INITIALIZATION ================= */
+    /* ================= 9. INITIALIZATION & DUAL-MODE ROUTER ================= */
     function initStudio() {
-      refreshCardDropdown();
-      randomizeAllShapes();
-      renderTrackCards();
-      compileExport();
+      const urlParams = new URLSearchParams(window.location.search);
+      const isEmbed = urlParams.get('embed') === 'true';
+
+      if (isEmbed) {
+        document.body.classList.add('embed-mode');
+        try {
+          if (window.location.hash && window.location.hash.length > 1) {
+            const rawHash = window.location.hash.substring(1);
+            const decodedConfig = JSON.parse(decodeURIComponent(escape(atob(rawHash))));
+            applyFullConfig(decodedConfig);
+          }
+        } catch (err) {
+          console.error("Failed to parse embed configuration:", err);
+        }
+        renderTrackCards();
+      } else {
+        refreshCardDropdown();
+        randomizeAllShapes();
+        renderTrackCards();
+        compileExport();
+      }
     }
 
     if (document.readyState === 'loading') {
